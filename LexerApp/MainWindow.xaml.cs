@@ -25,13 +25,19 @@ namespace LexerApp
 
         private void Analyze_Click(object sender, RoutedEventArgs e)
         {
-            lex.Text = "";
+            
             
             Lexer lexer = new Lexer();
-            foreach (var token in lexer.Tokenize(UserText.Text))
-            {
-                lex.Text += $"{token.Type.ToString()}: {token.Value}\n";
-            }
+            var tokens = lexer.Tokenize(UserText.Text);
+            var tokensG = tokens.GroupBy(token => token.Type).Select(token => new { Тип = token.Key, Количество = token.Count() });
+            var iTokens = tokens.Where(token => token.Type == TokenType.Identifier).Select(token => new { Тип = token.Type, Значение = token.Value });
+            var cTokens = tokens.Where(token => token.Type == TokenType.NumberConstant
+                                        || token.Type == TokenType.StringConstant
+                                        || token.Type == TokenType.CharConstant
+                                        || token.Type == TokenType.UnavailableConstant).Select(token => new { Тип = token.Type, Значение = token.Value });
+            LexTable.ItemsSource = tokensG;
+            identifierTable.ItemsSource = iTokens;
+            constantTable.ItemsSource = cTokens;
         }
     }
 }

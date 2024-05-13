@@ -10,6 +10,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
@@ -19,6 +21,8 @@
             <Button x:Name="Analyze" Content="Анализировать" Click="Analyze_Click"/>
             <TextBox x:Name="UserText" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Grid.Row="1"/>
         </Grid>
-        <TextBlock x:Name="lex" Grid.Column="1"/>
+        <DataGrid Grid.Column="1" Name="LexTable"/>
+        <DataGrid Grid.Column="2" Name="identifierTable"/>
+        <DataGrid Grid.Column="3" Name="constantTable"/>
     </Grid>
 </Window>
