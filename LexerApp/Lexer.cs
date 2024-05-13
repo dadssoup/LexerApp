@@ -25,7 +25,8 @@ namespace LexerApp
         Assignment,
         ExtendedAssignment,
         Separator,
-        LineSeparator
+        LineSeparator,
+        KeywordError
         // Другие типы лексем, если необходимо
     }
 
@@ -36,6 +37,22 @@ namespace LexerApp
         public Token(TokenType type, string value)
         {
             Type = type; Value = value;
+        }
+        public static bool operator ==(Token value1, Token value2)
+        {
+            return value1.Equals(value2);
+        }
+        public static bool operator !=(Token value1, Token value2)
+        {
+            return !value1.Equals(value2);
+        }
+        public override bool Equals(object? obj)
+        {
+            return obj != null && this.Type == ((Token)obj).Type && this.Value == ((Token)obj).Value;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 
@@ -127,11 +144,11 @@ namespace LexerApp
                     {
                         if (token.Length > 3)
                         {
-                            tokens.Add(new(TokenType.CharConstant, token.Replace("\'", "")));
+                            tokens.Add(new(TokenType.UnavailableConstant, token.Replace("\'", "")));
                         }
                         else
                         {
-                            tokens.Add(new(TokenType.UnavailableConstant, token.Replace("\'", "")));
+                            tokens.Add(new(TokenType.CharConstant, token.Replace("\'", "")));
                         }
                     }
                     else if (token.Equals("="))
@@ -160,10 +177,29 @@ namespace LexerApp
                     }
                 }
             }
-
+            ProcessKeywords(ref tokens);
             return tokens;
         }
+        public void ProcessKeywords(ref List<Token> tokens)
+        {
+            var doToken = new Token(TokenType.Keyword, "do");
+            var loopToken = new Token(TokenType.Keyword, "loop");
+            var whileToken = new Token(TokenType.Keyword, "while");
+            var kwtokens = tokens.Where(token => token.Type == TokenType.Keyword);
+            if (kwtokens.Count(token => token.Value == doToken.Value) != 1)
+            {
+                tokens.Add(new(TokenType.KeywordError, "do?"));
+            }
+            if (kwtokens.Count(token => token.Value == loopToken.Value) != 1)
+            {
+                tokens.Add(new(TokenType.KeywordError, "loop?"));
+            }
+            if (kwtokens.Count(token => token.Value == whileToken.Value) != 1)
+            {
+                tokens.Add(new(TokenType.KeywordError, "while?"));
+            }
 
+        }
         public bool HasOnlyNumbers(string word)
         {
             foreach (var c in word)
@@ -204,6 +240,7 @@ namespace LexerApp
             }
             return newWords;
         }
+        
     }
 }
 // replaced

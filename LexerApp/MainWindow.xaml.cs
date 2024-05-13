@@ -30,7 +30,8 @@ namespace LexerApp
             Lexer lexer = new Lexer();
             var tokens = lexer.Tokenize(UserText.Text);
             var tokensG = tokens.GroupBy(token => token.Type).Select(token => new { Тип = token.Key, Количество = token.Count() });
-            var iTokens = tokens.Where(token => token.Type == TokenType.Identifier).Select(token => new { Тип = token.Type, Значение = token.Value });
+            var iTokens = tokens.Where(token => token.Type == TokenType.Identifier 
+                                        || token.Type == TokenType.KeywordError).Select(token => new { Тип = token.Type, Значение = token.Value });
             var cTokens = tokens.Where(token => token.Type == TokenType.NumberConstant
                                         || token.Type == TokenType.StringConstant
                                         || token.Type == TokenType.CharConstant
